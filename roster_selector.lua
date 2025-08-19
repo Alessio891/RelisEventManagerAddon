@@ -139,6 +139,7 @@ function RelisEventManager:UpdateEventInfo()
         child:SetParent(nil)
     end
     
+    
     local function makeRow(text, _icon, y)
         local f = CreateFrame("Frame", nil, eventFrame)
         f:SetAllPoints()
