@@ -1,0 +1,25 @@
+## Interface: 100207
+## Title: Relis Event Manager
+## Notes: RaidHelper importer and manager for raid events, by Relis
+## Author: Relis
+## Version: 0.1
+## SavedVariables: RelisEventManagerDB
+
+lib/LibStub/LibStub.lua
+lib/AceAddon-3.0/AceAddon-3.0.lua
+lib/AceConsole-3.0/AceConsole-3.0.lua
+lib/AceDB-3.0/AceDB-3.0.lua
+lib/AceSerializer-3.0/AceSerializer-3.0.lua
+lib/AceGUI-3.0/AceGUI-3.0.xml
+lib/CallbackHandler-1.0/CallbackHandler-1.0.xml
+lib/AceConfig-3.0/AceConfig-3.0.xml
+lib/LibCompress/lib.xml
+lib/AceComm-3.0/AceComm-3.0.xml
+
+RelisEventManager.lua
+json.lua
+import_frame.lua
+discord_map.lua
+roster_selector.lua
+roster.lua
+rem_controlpanel.lua
