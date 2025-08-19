@@ -4,6 +4,7 @@ RelisEventManagerDB = RelisEventManagerDB or {}
 
 RelisEventManagerDB.current_event_data = RelisEventManagerDB.current_event_data or {}
 RelisEventManagerDB.discordUserMap = RelisEventManagerDB.discordUserMap or {}
+RelisEventManagerDB.convertToRaid = true
 
 RelisEventManager.InviteEnabled = true
 
@@ -201,6 +202,23 @@ function RelisEventManager:OnCommReceived(prefix, message, distribution, sender)
     end
 end
 
+local inviteWatcher = CreateFrame("Frame")
+
+local function OnRosterUpdate(_, event)
+    if event == "GROUP_ROSTER_UPDATE" then
+        if IsInGroup() and not IsInRaid() and UnitIsGroupLeader("player") then
+            if GetNumGroupMembers() > 1 and RelisEventManagerDB.convertToRaid then
+                C_PartyInfo.ConvertToRaid()
+                print("RelisEventManager: Converted to raid.")
+                inviteWatcher:UnregisterEvent("GROUP_ROSTER_UPDATE")
+            end
+        end
+    end
+end
+
+local inviteIndex = 1
+local inviteList = {}
+
 function RelisEventManager:MassInviteSignedPlayers()
     if not RelisEventManagerDB.current_event_data or not RelisEventManagerDB.current_event_data.signUps then
         print("No signup data available for invites.")
@@ -208,6 +226,7 @@ function RelisEventManager:MassInviteSignedPlayers()
     end
 
     local invitedCount = 0
+    
     for position, signup in pairs(RelisEventManagerDB.current_event_data.signUps) do
         if signup.joined == true then
             local playerName = RelisEventManagerDB.discordUserMap[signup.name] or signup.name
@@ -223,6 +242,9 @@ function RelisEventManager:MassInviteSignedPlayers()
     print(string.format("RelisEventManager: Sending invites to %d players.", invitedCount))
     if not RelisEventManager.InviteEnabled then
         print("RelisEventManager: WARNING! Invites are disabled. Enable them from the invites ui")
+    elseif invitedCount > 0 then
+        inviteWatcher:SetScript("OnEvent", OnRosterUpdate)
+        inviteWatcher:RegisterEvent("GROUP_ROSTER_UPDATE")
     end
     invitingActive = true
     SendNextInvite()
@@ -258,4 +280,5 @@ end
 SLASH_STOPINVITES1 = "/remabort"
 SlashCmdList["STOPINVITES"] = function(msg)
     invitingActive = false
+    inviteWatcher:UnregisterEvent("GROUP_ROSTER_UPDATE")
 end
